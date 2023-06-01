@@ -141,7 +141,7 @@ void loop() {
   Serial.println(revAngle);
 
   moveToTarget(shoulderAngleDeg,elbowAngleDeg, revAngle);
-//  stepper.release();
+ stepper.release();
   
   Serial.print("shoulder ");
   Serial.print(s1.read());
