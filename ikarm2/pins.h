@@ -7,46 +7,46 @@
 #include <Stepper.h>
 
 
-Servo s1; // shoulder
-Servo s2; // elbow
-Servo s3; //claw
-Servo s4; // claw 2
-Servo s5; //wrist
+Servo s1; // shoulder  // 39 blue n white
+Servo s2; // elbow    // 35 black
+Servo s3; // left claw  // 29 orange
+Servo s4; // rightclaw 28, orange
+Servo s5; //wrist  //37 blue
 
 
 // stepper
 Stepper stepper(stepsPerRevolution, 45, 47, 49, 51);
 
 // motor
-#define enA 52
-#define in1 20
+#define en1 52
+#define in1 50
 #define in2 48
 #define in3 46
 #define in4 44
-#define enB 42 
+#define en2 42 
 
 // initializer function
 void setup2(){
   Serial.begin(9600);
   stepper.setSpeed(30);
-  pinMode(enA, OUTPUT);
+  pinMode(en1, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
-  pinMode(enB, OUTPUT);
-  pinMode(43, OUTPUT);
+  pinMode(en2, OUTPUT);
+  pinMode(43, OUTPUT); 
   pinMode(53, OUTPUT);
 
-  digitalWrite(43, HIGH);
+  digitalWrite(43, HIGH); // turn the stepper motor on
   digitalWrite(53, HIGH);
 
 // servos 
-  s1.attach();  
-  s2.attach();
-  s3.attach();
-  s4.attach();
-  s5.attach();
+  s1.attach(39);  
+  s2.attach(35);
+  s3.attach(29);
+  s4.attach(28);
+  s5.attach(37);
 }
 
 // line follower functions
