@@ -16,10 +16,10 @@ Servo s4; // rightclaw 28, orange
 Servo s5; //wrist  //37 blue
 
 // IR sensors
-#define leftCorner 10
-#define left_s 11
-#define right_s 12
-#define rightCorner 13
+#define leftCorner 8
+#define left_s 9
+#define right_s 10
+#define rightCorner 11
 
 // pwm
 #define pwm 200
