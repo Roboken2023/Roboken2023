@@ -135,8 +135,7 @@ void pickObject(int x, int y, int z){
   moveToTarget(90,0,0);
 }
 
-void setup() {
-  Serial.begin(9600);
+void setupArm() {
   stepper.setSpeed(10);
   s1.attach(39);
   s2.attach(35);
@@ -158,7 +157,7 @@ void setup() {
   
 }
 
-void loop() {
+void runArm() {
   
   Serial.println("waiting for new coordinates...");
   String s ="";
