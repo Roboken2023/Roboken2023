@@ -15,6 +15,15 @@ Servo s3; // left claw  // 29 orange
 Servo s4; // rightclaw 28, orange
 Servo s5; //wrist  //37 blue
 
+// IR sensors
+#define leftCorner 10
+#define left_s 11
+#define right_s 12
+#define rightCorner 13
+
+// pwm
+#define pwm 200
+#define pwm2 255
 
 // stepper
 Stepper stepper(200, 45, 47, 49, 51);
@@ -109,6 +118,20 @@ void left(int _pwm){
   digitalWrite(in4, LOW);
 }
 
+// tester function
+void followLine(){
+  int l = digitalRead(left_s);
+  int r = digitalRead(right_s);
+  if(l == 0 && r ==0){
+    forward(pwm);
+  }else if(l==1 && r ==0 ){
+    left(pwm2);
+  }else if(l ==0 && r ==1){
+    right(pwm2);
+  }else{
+    forward(pwm);
+  }
+}
 
 
 
