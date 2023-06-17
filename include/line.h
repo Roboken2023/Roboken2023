@@ -4,8 +4,8 @@
 #endif
 
 void followLine(){
-  int l = digitalRead(left_s);
-  int r = digitalRead(right_s);
+  int l = digitalRead(left_S);
+  int r = digitalRead(right_S);
   int r_corner = digitalRead(rightCorner);
   int l_corner = digitalRead(leftCorner);
   

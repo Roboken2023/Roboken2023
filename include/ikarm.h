@@ -3,7 +3,7 @@
 int SHOULDER=210;
 int ELBOW=100; 
 bool clockwise=true;
-double ratio = 180/3.14159265359; 
+double ratio = 180/PI; 
 
 double shoulderAngleDeg=0;
 double elbowAngleDeg = 0;
@@ -11,7 +11,7 @@ double shoulderAngleRadians=100000;
 double elbowAngleRadians=100000;
 double revAngle; // store the step angle in radians
 int stepVal;
-
+int current_step=0;
 #define CLOSE 0
 #define OPEN 1
 
@@ -81,6 +81,9 @@ void calculateAngles(int x, int y, int z){
 }
 void moveToTarget(int _shoulder, int _elbow, int _Angle){
    reset();
+   // enable steppers
+   digitalWrite(43, HIGH);
+   digitalWrite(53, HIGH);
    stepVal = deg2step(_Angle);
    
    bool targetReachedS = false;
@@ -119,8 +122,16 @@ void moveToTarget(int _shoulder, int _elbow, int _Angle){
       }else{
         stepperReached = true;
       }
-      delay(30);
+      delay(20);
     }
+
+    // disable stepper to conserve power
+    digitalWrite(43, LOW);
+    digitalWrite(53, LOW);
+    digitalWrite(45, LOW);
+    digitalWrite(47, LOW);
+    digitalWrite(49, LOW);
+    digitalWrite(51, LOW);
 }
 
 void pickObject(int x, int y, int z){
@@ -144,16 +155,16 @@ void setupArm() {
   pinMode(43, OUTPUT);
   pinMode(53, OUTPUT);
 
-  digitalWrite(43, HIGH);
-  digitalWrite(53, HIGH);
+
   Serial.println(s1.read());
   Serial.println(s2.read());
-  delay(500);
-//  reset();
-  delay(500);
-  Serial.println("setting to zero done");
-  Serial.println(s1.read());
-  Serial.println(s2.read());
+//   delay(500);
+// //  reset();
+//   delay(500);
+//   Serial.println("setting to zero done");
+//   Serial.println(s1.read());
+//   Serial.println(s2.read());
+delay(1000);
   
 }
 
