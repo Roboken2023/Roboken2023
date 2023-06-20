@@ -26,7 +26,7 @@ void setup(){
     pinMode(12, INPUT_PULLUP);
     pinMode(7, INPUT_PULLUP);
 
-    
+    setupIMU();
 
     
 }
@@ -38,10 +38,10 @@ void gotoCabin(){
       followLine();
 
     }
-  right_90();
+  turnLeft(90);
   stop();
   delay(2000);
-  right(255);
+  turnRight(150);
   delay(1000);
   //  while(digitalRead(rightCorner) == 0 || digitalRead(right_S) == 0){
   //     forward(255);
@@ -142,21 +142,26 @@ void gotoRamp(){
       }
       else{
         stop();
-        delay(10000);
+        delay(2000);
         break;
       }
     }
+    now = millis();
+    while(millis()-now < 10000){
+       followLineBackwards();
+   }
+
 }
 
 
 void loop(){
   if(flag==0){
     // gotoCabin();
-    gotoEngine();
-    gotoWheels();
-    gotoRamp();
+    // gotoEngine();
+    // gotoWheels();
+    // gotoRamp();
     // setupIMU();
-    // gotoCabin();
+    gotoCabin();
     
     flag=1;
   }
