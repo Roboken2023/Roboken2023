@@ -4,3 +4,6 @@
 .vscode/launch.json
 .vscode/ipch
 cadfiles/job
+cad files/job/base.SLDPRT
+.gitignore
+cad files/job/top.SLDPRT

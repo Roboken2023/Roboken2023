@@ -12,10 +12,10 @@
 
 int mode = FORWARD;
 int timeSpentGoingForward=0;
+int l;
+int r;
 
-int trig = 9;
-int echo = 8;
-float distance =1;
+
 
 Servo s1; // shoulder  // 39 blue n white
 Servo s2; // elbow    // 35 black
@@ -41,8 +41,20 @@ Stepper stepper(200, 45, 47, 49, 51);
 #define rightCorner A0  // interrupt
 
 int pwm=255;
-int pwm2=180;
+int pwm2=255;
+int r;
+int l;
+int r_corner;
+int l_corner;
 
+void read_ir(){
+  l = digitalRead(left_S);
+  r = digitalRead(right_S);
+  
+  r_corner = digitalRead(rightCorner);
+  l_corner = digitalRead(leftCorner);
+
+}
 
                                                                                                  
 void forward(int _pwm){    
@@ -57,7 +69,7 @@ void forward(int _pwm){
   //     pwmForward=170;
   //   }
   // }          // forward
-  analogWrite(en1, _pwm*0.98);
+  analogWrite(en1, _pwm);
   analogWrite(en2, _pwm);   
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
@@ -76,10 +88,10 @@ void back(int _pwm){             // back
 void stop();
 
 void left_90(){  \
-  //  forward(255);
-  // delay(300);
+   forward(255);
+  delay(300);
   stop();
-  delay(100);           // left 90 degrees
+  delay(1000);           // left 90 degrees
   analogWrite(en1, 255);
   analogWrite(en2, 255);
   digitalWrite(in1, LOW);
@@ -94,11 +106,13 @@ void left_90(){  \
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
   delay(100);
+  stop();
+  delay(1000);
 }
 
 void right_90(){ 
-  // forward(255);
-  // delay(300);
+  forward(255);
+  delay(300);
   stop();
   delay(100);            // left 90 degrees
   analogWrite(en1, 255);
@@ -115,8 +129,8 @@ void right_90(){
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
   delay(100);
-  // stop();
-  // delay(1000);
+  stop();
+  delay(1000);
 }
 
 void right(int _pwm){
@@ -127,7 +141,20 @@ void right(int _pwm){
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
 }
+void left_902(int _pwm){
 
+while (1){
+  analogWrite(en1, _pwm);
+  analogWrite(en2, _pwm);
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  read_ir();
+if (l==1 ||r==1){
+  break;
+}
+}
 void left(int _pwm){
   analogWrite(en1, _pwm);
   analogWrite(en2, _pwm);
@@ -145,49 +172,56 @@ void stop(){
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
 }
+// void followLine(){
+//   int l = digitalRead(left_S);
+//   int r = digitalRead(right_S);
+  
+//   if(l == 0 && r ==0){
+//     forward(pwm);
+//   }else if(l==1 && r ==0 ){
+//     right(pwm2);
+//   }else if(l ==0 && r ==1){
+//     left(pwm2);
 
-float calculateDistance(){ 
-  digitalWrite(trig, LOW); 
-  delayMicroseconds(2);  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trig, HIGH); 
-  delayMicroseconds(10);
-  digitalWrite(trig, LOW);
-  float duration = pulseIn(echo, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-  float d= duration*0.034/2;
-  return d;
+//   }else{
+//     forward(pwm);
+//   }
+// }
+
 }
 
 void followLine(){
-
-  int l = digitalRead(left_S);
-  int r = digitalRead(right_S);
+  read_ir();
   if(l == 0 && r ==0){
     forward(pwm);
   }else if(l==1 && r ==0 ){
     right(pwm2);
   }else if(l ==0 && r ==1){
     left(pwm2);
+  else if (r_corner==0  && l_corner ==1){
+    left_902(pwm2);
+  }
   }else{
     forward(pwm);
   }
 }
 
-void followLineBackwards(){
+// void left_902(){
 
-  int l = digitalRead(12);
-  int r = digitalRead(7);
-  if(l == 0 && r ==0){
-    back(pwm);
-  }else if(l==1 && r ==0 ){
-    Serial.println("left");
-    right(pwm2);
-  }else if(l ==0 && r ==1){
-    Serial.println("right");
-    left(pwm2);
-  }else{
-    back(pwm);
-  }
-}
+//   while (1)
+//   {
+//   analogWrite(en1, 255);
+//   analogWrite(en2, 255);
+//   digitalWrite(in1, LOW);
+//   digitalWrite(in2, HIGH);
+//   digitalWrite(in3, HIGH);
+//   digitalWrite(in4, LOW);
+//   if (l==1 || r ==0 ){
+//     stop();
 
+//     break;
+//   }
+//   }
+// }
 
 #endif
