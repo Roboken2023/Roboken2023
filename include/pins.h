@@ -15,6 +15,9 @@ int timeSpentGoingForward=0;
 
 int trig = 9;
 int echo = 8;
+
+int trig2 = 10;
+int echo2 = 11;
 float distance =1;
 
 Servo s1; // shoulder  // 39 blue n white
@@ -57,7 +60,7 @@ void forward(int _pwm){
   //     pwmForward=170;
   //   }
   // }          // forward
-  analogWrite(en1, _pwm*0.98);
+  analogWrite(en1, _pwm);
   analogWrite(en2, _pwm);   
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
@@ -107,7 +110,7 @@ void right_90(){
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  delay(500);
+  delay(600);
   analogWrite(en1, 255);
   analogWrite(en2,255);
   digitalWrite(in1, LOW);
@@ -119,6 +122,17 @@ void right_90(){
   // delay(1000);
 }
 
+void delay_ms(int ms){
+  int _t = millis();
+  while(true){
+    if(millis()-_t < 5000){
+      ;
+    }else{
+      break;
+    }
+  }
+
+}
 void right(int _pwm){
   analogWrite(en1, _pwm);
   analogWrite(en2, _pwm);
@@ -157,6 +171,17 @@ float calculateDistance(){
   return d;
 }
 
+float calculateDistance(int trigger, int echoPin){ 
+  digitalWrite(trigger, LOW); 
+  delayMicroseconds(2);  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigger, HIGH); 
+  delayMicroseconds(10);
+  digitalWrite(trigger, LOW);
+  float duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
+  float d= duration*0.034/2;
+  return d;
+}
+
 void followLine(){
 
   int l = digitalRead(left_S);
@@ -174,8 +199,8 @@ void followLine(){
 
 void followLineBackwards(){
 
-  int l = digitalRead(12);
-  int r = digitalRead(7);
+  int l = digitalRead(3);
+  int r = digitalRead(2);
   if(l == 0 && r ==0){
     back(pwm);
   }else if(l==1 && r ==0 ){
