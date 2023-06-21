@@ -1,8 +1,208 @@
 #include "pins.h"
-#include "Gyroscope.h"
+// #include "Gyroscope.h"
 
 int counter = 0;
 int flag = 0;
+unsigned long currTime=0;
+
+void pickCabin(){
+  
+}
+
+void moveToCabin(){
+  while(true){
+    int offset = calculateDistance(trig2, echo2);
+    }
+}
+
+void gotoCabin(){
+  currTime=millis();
+  while(millis()-currTime < 5000){
+    followLine();
+  }
+  right(255);
+  delay(500);
+  stop();
+  delay(2000);//
+  right(255); //turning left 
+  delay(600);
+  stop();
+  delay(100);
+
+  //find line
+
+   while(digitalRead(right_S) == 0 || digitalRead(left_S) == 0 ){
+
+      forward(255);
+      if (digitalRead(right_S) == 1 || digitalRead(left_S) == 1){break;}
+
+    }
+
+    stop();
+    delay(200);
+
+    //back to line correction
+    right(255);
+    delay(120);
+
+  while(true){
+    distance = calculateDistance()*10; // convert to millimeters
+    // Serial.println(distance);
+    if ((int)distance > 200)
+    {
+      followLine();
+    }
+    else{
+  // =================================================engine==========================
+      stop();
+      delay(3000); //drop cabin
+      break;
+    }
+  }
+
+  currTime = millis();
+
+    while (true){
+      if ((millis()-currTime) < 3000)
+          {
+            followLineBackwards();
+          }
+          else{
+            break;
+            }      
+    }
+
+ 
+
+}
+
+void gotoEngine(){
+     //turning right to move to engine line
+    stop();
+    delay(100);
+    left(255);
+    delay(200);
+    stop();
+    delay(120);
+
+  //find engine line
+   while( digitalRead(right_S) == 0 || digitalRead(left_S) == 0 ){
+      forward(255);
+      if (digitalRead(right_S) == 1 || digitalRead(left_S) == 1){break;}
+    }
+
+    stop();
+    delay(200);
+    right(255);
+    delay(220);//back to line correction
+    
+    //move to engine position
+    while(true){
+      distance = calculateDistance()*10; 
+      if ((int)distance > 200)
+      {
+          followLine();
+      }
+      else{
+        stop();
+        delay(3000); //pick up engine
+        currTime = millis();
+        while(true){
+        if (millis()-currTime< 3000)
+        {
+          followLineBackwards();
+
+        }
+        else{break;}
+
+        }        
+        break;
+      } 
+    }
+}
+
+void gotoWheels(){
+  //turn to face the wheel line
+    stop();
+    delay(220);
+    right(255);
+    delay(350);
+
+  //find wheel line
+    while(digitalRead(right_S) == 0|| digitalRead(right_S) == 0){
+      forward(255);
+      if (digitalRead(right_S) == 1 || digitalRead(right_S) == 1){break;}
+    }
+    stop();
+    delay(200);
+    left(255);
+    delay(200);
+  
+    //move to wheel position
+    while(true){
+      distance = calculateDistance()*10; 
+      if ((int)distance > 200)
+      {
+          followLine();
+      }
+      else{
+        stop();
+        delay(3000); // pick wheels
+        break;
+      }
+    }
+    
+
+}
+
+void gotoRamp(){
+    currTime = millis();
+    while(millis()-currTime < 5500)
+    {
+       followLineBackwards();
+   }
+    right(255);
+    delay(350);
+    //skip the forthcoming line and reach the ramp line for trailer pick up
+    //a counter can also be implemented here
+    forward(255);
+    delay(2000);
+    
+    while( digitalRead(left_S) == 0 || digitalRead(right_S) == 0)
+    {
+      forward(255);
+      if (digitalRead(left_S) == 1 || digitalRead(right_S) == 1){break;}
+
+    }
+    stop();
+    delay(200);
+    left(255);//turn to face ramp line
+    delay(200);
+
+    //move to trailer position
+    while(true){
+      distance = calculateDistance()*10; 
+      if ((int)distance > 200){
+          followLine();
+      }
+      else{
+        stop();
+        delay(2000);//pick up the trailer
+        currTime = millis();
+        while(millis()-currTime < 6000)
+        {
+          followLineBackwards();
+        }
+
+        break;
+      }
+    }
+
+    // move down the ramp
+
+}
+
+
 void setup(){
     Serial.begin(9600);
     pinMode(A7, OUTPUT);
@@ -23,158 +223,22 @@ void setup(){
     pinMode(trig, OUTPUT);
     pinMode(echo, INPUT_PULLUP);
 
-    pinMode(12, INPUT_PULLUP);
-    pinMode(7, INPUT_PULLUP);
-
-    setupIMU();
-
-    
-}
-
-void gotoCabin(){
-  int currTime = millis();
-    while ((millis()-currTime) < 6000)
-    {
-      followLine();
-
-    }
-  turnLeft(90);
-  stop();
-  delay(2000);
-  turnRight(150);
-  delay(1000);
-  //  while(digitalRead(rightCorner) == 0 || digitalRead(right_S) == 0){
-  //     forward(255);
-  //   }
-  //   stop();
-  //   delay(200);
-  //   right(255);
-  //   delay(200);
-  while(true){
-    distance = calculateDistance()*10; // convert to millimeters
-    Serial.println(distance);
-    if ((int)distance > 200){
-      followLine();
-    }else{
-  // =================================================engine==========================
-      stop();
-      delay(2000); // pick engine
-      break;
-    }
-  }
-}
-
-void gotoEngine(){
-  while(true){
-    distance = calculateDistance()*10; // convert to millimeters
-    Serial.println(distance);
-    if ((int)distance > 200){
-      followLine();
-    }else{
-  // =================================================engine==========================
-      stop();
-      delay(2000); // pick engine
-      break;
-    }
-  }
-
-}
-
-void gotoWheels(){
-    int currTime = millis();
-    while ((millis()-currTime) < 3000)
-    {
-      followLineBackwards();
-
-    }
-    stop();
-    delay(200);
-    right(255);
-    delay(350);
-    currTime=millis();
-    while(millis()-currTime <500){
-      forward(255);
-    }
-    while(digitalRead(rightCorner) == 0 || digitalRead(right_S) == 0){
-      forward(255);
-    }
-    stop();
-    delay(200);
-    left(255);
-    delay(350);
-    
-    
-    while(true){
-      distance = calculateDistance()*10; 
-      if ((int)distance > 200){
-          followLine();
-      }else{
-        stop();
-        delay(3000); // pick wheels
-        break;
-      }
-    }
-}
-
-void gotoRamp(){
-    int now = millis();
-    while(millis()-now < 4500){
-       followLineBackwards();
-   }
-    right(255);
-    delay(350);
-    forward(255);
-    delay(2000);
-    
-    while(digitalRead(rightCorner) == 0 || digitalRead(right_S) == 0){
-      forward(255);
-    }
-    stop();
-    delay(200);
-    left(255);
-    delay(350);
-    
-    while(true){
-      distance = calculateDistance()*10; 
-
-      if ((int)distance > 200){
-          followLine();
-      }
-      else{
-        stop();
-        delay(2000);
-        break;
-      }
-    }
-    now = millis();
-    while(millis()-now < 10000){
-       followLineBackwards();
-   }
-
-}
-
-
-void loop(){
-  if(flag==0){
-    // gotoCabin();
-    // gotoEngine();
-    // gotoWheels();
-    // gotoRamp();
-    // setupIMU();
+    pinMode(3, INPUT_PULLUP);
+    pinMode(2, INPUT_PULLUP);
     gotoCabin();
+    gotoEngine();
+    gotoWheels();
+    gotoRamp();
+
+
     
-    flag=1;
-  }
-  // counter++;
-  
-  // followLineBackwards();
-  // delay(10000);
-  // int now = millis();
-  // while(millis()-now <5000){runIMU();}
-  // delay(5000);
-  
-  // left_90();
-  // left_90();
-  // delay(2000);
+}
+
+void loop()
+{
+  // if(flag == 0){
+    
+  // }
+  // flag=1;
 
 }
