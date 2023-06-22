@@ -1,24 +1,29 @@
 #include "pins.h"
 // #include "Gyroscope.h"
+#include "ikarm.h"
 
 int counter = 0;
 int flag = 0;
 unsigned long currTime=0;
 
-void pickCabin(){
-  
-}
-
 void moveToCabin(){
+  int offset;
   while(true){
-    int offset = calculateDistance(trig2, echo2);
+    offset = calculateDistance(trig2, echo2)*10;
+    // Serial.println(offset);
+    if(offset<300){
+      stop();
+      delay(10000);
+    }else{
+      followLine();
     }
+  }
 }
 
 void gotoCabin(){
   currTime=millis();
   while(millis()-currTime < 5000){
-    followLine();
+    forward(255);
   }
   right(255);
   delay(500);
@@ -81,7 +86,7 @@ void gotoEngine(){
     stop();
     delay(100);
     left(255);
-    delay(200);
+    delay(250);
     stop();
     delay(120);
 
@@ -94,7 +99,7 @@ void gotoEngine(){
     stop();
     delay(200);
     right(255);
-    delay(220);//back to line correction
+    delay(120);//back to line correction
     
     //move to engine position
     while(true){
@@ -189,10 +194,29 @@ void gotoRamp(){
         stop();
         delay(2000);//pick up the trailer
         currTime = millis();
-        while(millis()-currTime < 6000)
+        while(digitalRead(7)==0 || digitalRead(11)==0)
         {
           followLineBackwards();
+          if(digitalRead(7)==1 || digitalRead(11)==1){
+            break;
+          }
         }
+        stop();
+        delay(100);
+        forward(255);
+        delay(350);
+        left(255);
+        delay(500);
+        while(true){
+          distance = calculateDistance()*10; 
+          if ((int)distance > 200){
+              followLine();
+          }
+          else{
+            break;
+          }
+        }
+        stop();
 
         break;
       }
@@ -223,12 +247,18 @@ void setup(){
     pinMode(trig, OUTPUT);
     pinMode(echo, INPUT_PULLUP);
 
+    pinMode(trig2, OUTPUT);
+    pinMode(echo2, INPUT_PULLUP);
+
     pinMode(3, INPUT_PULLUP);
     pinMode(2, INPUT_PULLUP);
-    gotoCabin();
-    gotoEngine();
-    gotoWheels();
-    gotoRamp();
+    // gotoCabin();
+    // gotoEngine();
+    // gotoWheels();
+    // gotoRamp();
+    // moveToCabin();
+    setupArm();
+    pickWheels();
 
 
     
@@ -236,9 +266,6 @@ void setup(){
 
 void loop()
 {
-  // if(flag == 0){
-    
-  // }
-  // flag=1;
+  runArm();
 
 }

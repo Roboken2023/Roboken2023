@@ -72,13 +72,20 @@ void calculateAngles(int x, int y, int z){
   
   BEGIN:
     elbowAngleRadians=acos(elbow);
-    elbowAngleDeg = 180-rad2deg(elbowAngleRadians);
+    elbowAngleDeg = 180-rad2deg(elbowAngleRadians)+40;
     shoulderAngleRadians = (sqrt(hyp0)!=0?acos(shoulder)+atan(z/sqrt(hyp0)):acos(shoulder)+deg2rad(90));
-    shoulderAngleDeg = rad2deg(shoulderAngleRadians);
+    shoulderAngleDeg = rad2deg(shoulderAngleRadians)+53;
     return;
  END:
     Serial.println("invalid entry");
 }
+
+void calculateAngles2(int x, int y, int z){
+  shoulderAngleDeg = x;
+  elbowAngleDeg = y;
+  revAngle = z;
+}
+
 void moveToTarget(int _shoulder, int _elbow, int _Angle){
    reset();
    // enable steppers
@@ -122,7 +129,7 @@ void moveToTarget(int _shoulder, int _elbow, int _Angle){
       }else{
         stepperReached = true;
       }
-      delay(20);
+      delay(5);
     }
 
     // disable stepper to conserve power
@@ -149,9 +156,11 @@ void pickObject(int x, int y, int z){
 void setupArm() {
   stepper.setSpeed(10);
   s1.attach(39);
-  s2.attach(35);
-  s3.attach(29);
-  s4.attach(28);
+  s2.attach(31);
+  s3.attach(35);
+  s4.attach(37);
+  s5.attach(33);
+
   pinMode(43, OUTPUT);
   pinMode(53, OUTPUT);
 
@@ -166,6 +175,24 @@ void setupArm() {
 //   Serial.println(s2.read());
 delay(1000);
   
+}
+
+void pickWheels(){
+  moveToTarget(0,0,0); // bottom wheel
+  // set it to the back
+  delay(2000);
+
+  moveToTarget(27,15,0); // bottom wheel
+  // set it to the back
+  delay(2000);
+
+  moveToTarget(42,23,0); // bottom wheel
+  // set it to the back
+  delay(2000);
+
+  moveToTarget(60,40,0); // bottom wheel
+  // set it to the back
+  delay(2000);
 }
 
 void runArm() {
@@ -184,7 +211,7 @@ void runArm() {
   s3.write(100);
   s4.write(0);
 //  pickObject(x,y,z);
-calculateAngles(x,y,z);
+calculateAngles2(x,y,z);
  
   Serial.println(shoulderAngleDeg);
   Serial.println(elbowAngleDeg);
@@ -207,19 +234,17 @@ calculateAngles(x,y,z);
   Serial.print(y);
   Serial.print(",");
   Serial.println(z);
-  delay(500);
-  s3.write(36);
-  s4.write(64);
-  delay(2000);
-  for(int i = s2.read(); i>0;i--){
-    s2.write(i);
-    delay(20);
-  }
-  for(int i = s1.read(); i>0;i--){
-    s1.write(i);
-    delay(20);
-  }
-  moveToTarget(90,90,0);
-  moveToTarget(shoulderAngleDeg,elbowAngleDeg, revAngle);
+  // delay(500);
+  // s3.write(36);
+  // s4.write(64);
+  // delay(2000);
+  // for(int i = s2.read(); i>0;i--){
+  //   s2.write(i);
+  //   delay(20);
+  // }
+  // for(int i = s1.read(); i>0;i--){
+  //   s1.write(i);
+  //   delay(20);
+  // }
   
 }

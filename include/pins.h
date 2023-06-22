@@ -16,15 +16,15 @@ int timeSpentGoingForward=0;
 int trig = 9;
 int echo = 8;
 
-int trig2 = 10;
-int echo2 = 11;
+int trig2 = 36;
+int echo2 = 37;
 float distance =1;
 
 Servo s1; // shoulder  // 39 blue n white
-Servo s2; // elbow    // 35 black
-Servo s3; // left claw  // 29 orange
-Servo s4; // rightclaw 28, orange
-Servo s5; //wrist  //37 blue
+Servo s2; // elbow    // 31 black
+Servo s3; // left claw  // 35 orange
+Servo s4; // rightclaw 37, orange
+Servo s5; //wrist  //33 blue
 
 // stepper
 Stepper stepper(200, 45, 47, 49, 51);
@@ -213,6 +213,7 @@ void followLineBackwards(){
     back(pwm);
   }
 }
+
 
 
 #endif
